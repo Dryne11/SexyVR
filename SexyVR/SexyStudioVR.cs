@@ -1,5 +1,6 @@
 ﻿using IllusionPlugin;
 using System;
+using UnityEngine;
 using VRGIN.Core;
 
 namespace SexyVR {
@@ -21,8 +22,6 @@ namespace SexyVR {
                 return "0.1";
             }
         }
-
-        private Boolean InitVr = false;
 
         public void OnApplicationQuit() {
         }
@@ -50,6 +49,13 @@ namespace SexyVR {
         }
 
         public void OnUpdate() {
+            // These canvas are in the "Default" layer, which is not showing in the vr cam. Reassign them to
+            // the "UI" layer where all other menu canvas are put.
+            foreach (Canvas canvas in GameObject.FindObjectsOfType<Canvas>()) {
+                if (canvas.name.Equals("AnimeControlCanvas") || canvas.name.Equals("HAnimeControlCanvas")) {
+                    canvas.gameObject.layer = LayerMask.NameToLayer("UI");
+                }
+            }
         }
     }
 }

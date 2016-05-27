@@ -42,15 +42,8 @@ namespace SexyVR {
         }
 
         public override Camera FindCamera() {
-            //Logger.Info("Found {0} cameras:", Camera.allCamerasCount);
-            //foreach (Camera cam in Camera.allCameras) {
-            //    Logger.Info("{0}", cam);
-            //}
-            //Logger.Info("current={0} -- main={1}", Camera.current, Camera.main);
-
             GameObject gameObjectWithTag = GameObject.FindGameObjectWithTag("Camera3D");
             Camera cam = (Camera) gameObjectWithTag.GetComponent<Camera>();
-            Logger.Info("using camera {0} -- pos {1} -- rot {2}", cam, cam.transform.position, cam.transform.rotation);
             return cam;
         }
     }
