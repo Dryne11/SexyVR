@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using VRGIN.Core;
 using VRGIN.Core.Visuals;
 
@@ -54,7 +55,19 @@ namespace SexyVR {
 
         public int UILayerMask {
             get {
-                return LayerMask.GetMask("UI");
+                return LayerMask.GetMask(UILayer);
+            }
+        }
+
+        public string UILayer {
+            get {
+                return "UI";
+            }
+        }
+
+        public bool SimulateCursor {
+            get {
+                return true;
             }
         }
     }

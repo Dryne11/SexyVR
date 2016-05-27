@@ -51,9 +51,6 @@
     <Reference Include="UnityEngine.UI">
       <HintPath>..\VRGIN.Core\Libs\Unity 4.6\UnityEngine.UI.dll</HintPath>
     </Reference>
-    <Reference Include="VRGIN.Core.U46">
-      <HintPath>..\VRGIN.Core\VRGIN.Core.U46\obj\Debug\VRGIN.Core.U46.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -61,6 +58,12 @@
     <Compile Include="SexyStudioInterpreter.cs" />
     <Compile Include="SexyStudioSeatedMode.cs" />
     <Compile Include="SexyStudioVR.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VRGIN.Core\VRGIN.Core.U46\VRGIN.Core.U46.csproj">
+      <Project>{8fe87229-42a4-4cb0-846a-7a2726569b17}</Project>
+      <Name>VRGIN.Core.U46</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
