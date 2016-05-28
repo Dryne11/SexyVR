@@ -73,7 +73,9 @@ namespace SexyVR {
 
         public bool GUIAlternativeSortingMode {
             get {
-                return true;
+                // Canvas that overlap other canvas (exit dialog, scene load gallery) are not fully operable if
+                // we use the alternative sorting mode.
+                return false;
             }
         }
     }

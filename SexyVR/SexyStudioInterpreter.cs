@@ -38,7 +38,6 @@ namespace SexyVR {
 
         protected override void OnUpdate() {
             base.OnUpdate();
-            FindCamera();
         }
 
         public override Camera FindCamera() {

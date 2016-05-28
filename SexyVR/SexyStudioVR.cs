@@ -49,6 +49,27 @@ namespace SexyVR {
         }
 
         public void OnUpdate() {
+            fixCameraTarget();
+            fixCanvasLayer();
+        }
+
+        private void fixCameraTarget() {
+            // The target is always set to the camera transform, even in modes like Straight, Divert and Animation.
+            foreach (NeckLookController neck in GameObject.FindObjectsOfType<NeckLookController>()) {
+                if (neck.target != null && neck.target.gameObject != VRCamera.Instance.SteamCam.gameObject) {
+                    neck.target = VRCamera.Instance.SteamCam.transform;
+                    Logger.Info("Fixed neck target");
+                }
+            }
+            foreach (EyeLookController eye in GameObject.FindObjectsOfType<EyeLookController>()) {
+                if (eye.target != null && eye.target.gameObject != VRCamera.Instance.SteamCam.gameObject) {
+                    eye.target = VRCamera.Instance.SteamCam.transform;
+                    Logger.Info("Fixed eye target");
+                }
+            }
+        }
+
+        private void fixCanvasLayer() {
             // These canvas are in the "Default" layer, which is not showing in the vr cam. Reassign them to
             // the "UI" layer where all other menu canvas are put.
             foreach (Canvas canvas in GameObject.FindObjectsOfType<Canvas>()) {
