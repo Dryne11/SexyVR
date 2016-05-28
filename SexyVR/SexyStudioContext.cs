@@ -70,5 +70,11 @@ namespace SexyVR {
                 return true;
             }
         }
+
+        public bool GUIAlternativeSortingMode {
+            get {
+                return true;
+            }
+        }
     }
 }
