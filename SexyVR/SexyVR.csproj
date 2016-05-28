@@ -70,7 +70,21 @@
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
-  <Target Name="AfterBuild">
-  </Target>
   -->
+  <Target Name="AfterBuild" Condition="'$(Configuration)' == 'Install'">
+    <Message Text="Installing mod..." Importance="normal" />
+    <PropertyGroup>
+      <InstallDir>$(registry:HKEY_CURRENT_USER\Software\illusion\SexyBeachPR@INSTALLDIR)</InstallDir>
+      <PluginDir>$(InstallDir)Plugins\</PluginDir>
+      <DataDir>$(InstallDir)SexyBeachStudio_32_Data\</DataDir>
+    </PropertyGroup>
+    <ItemGroup>
+      <PluginFile1 Include="$(OutputPath)SexyVR.dll" />
+	  <PluginFile2 Include="$(OutputPath)VRGIN.Core.U46.dll" />
+      <ImageFiles Include="$(OutputPath)Images\*.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(PluginFile1)" DestinationFolder="$(PluginDir)" />
+	<Copy SourceFiles="@(PluginFile2)" DestinationFolder="$(PluginDir)" />
+    <Copy SourceFiles="@(ImageFiles)" DestinationFolder="$(PluginDir)Images" />
+  </Target>
 </Project>
