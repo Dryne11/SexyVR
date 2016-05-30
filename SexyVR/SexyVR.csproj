@@ -77,7 +77,7 @@
     </PropertyGroup>
     <ItemGroup>
       <PluginFile1 Include="$(OutputPath)SexyVR.dll" />
-      <PluginFile2 Include="$(OutputPath)VRGIN.Core.U46.dll" />
+      <PluginFile2 Include="$(OutputPath)VRGIN.U46.dll" />
       <ImageFiles Include="$(OutputPath)Images\*.*" />
     </ItemGroup>
     <Copy SourceFiles="@(PluginFile1)" DestinationFolder="$(PluginDir)" />
