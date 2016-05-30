@@ -23,6 +23,8 @@ namespace SexyVR {
             }
         }
 
+        private bool vrEnabled = false;
+
         public void OnApplicationQuit() {
         }
 
@@ -30,6 +32,7 @@ namespace SexyVR {
             if (Environment.CommandLine.Contains("--vr")) {
                 var manager = VRManager.Create<SexyStudioInterpreter>(new SexyStudioContext());
                 manager.SetMode<SexyStudioSeatedMode>();
+                vrEnabled = true;
             }
             if (Environment.CommandLine.Contains("--verbose")) {
                 Logger.Level = Logger.LogMode.Debug;
@@ -49,11 +52,20 @@ namespace SexyVR {
         }
 
         public void OnUpdate() {
-            fixCameraTarget();
-            fixCanvasLayer();
+            if (vrEnabled) {
+                FixCameraTarget();
+                FixCanvasLayer();
+                //LogCameraProperties();
+            }
         }
 
-        private void fixCameraTarget() {
+        private void LogCameraProperties() {
+            Camera studioCam = (Camera) GameObject.FindGameObjectWithTag("Camera3D").GetComponent<Camera>();
+            SteamVR_Camera vrCam = VRCamera.Instance.SteamCam;
+            Logger.Info("rotation - vr={0} studio={1}", vrCam.transform.rotation, studioCam.transform.rotation);
+        }
+
+        private void FixCameraTarget() {
             // The target is always set to the camera transform, even in modes like Straight, Divert and Animation.
             foreach (NeckLookController neck in GameObject.FindObjectsOfType<NeckLookController>()) {
                 if (neck.target != null && neck.target.gameObject != VRCamera.Instance.SteamCam.gameObject) {
@@ -69,7 +81,7 @@ namespace SexyVR {
             }
         }
 
-        private void fixCanvasLayer() {
+        private void FixCanvasLayer() {
             // These canvas are in the "Default" layer, which is not showing in the vr cam. Reassign them to
             // the "UI" layer where all other menu canvas are put.
             foreach (Canvas canvas in GameObject.FindObjectsOfType<Canvas>()) {
