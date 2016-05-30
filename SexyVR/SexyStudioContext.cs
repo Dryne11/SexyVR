@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using VRGIN.Core;
-using VRGIN.Core.Visuals;
+using VRGIN.Visuals;
 
 namespace SexyVR {
     class SexyStudioContext : IVRManagerContext {

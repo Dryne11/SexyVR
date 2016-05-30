@@ -2,10 +2,10 @@
 using System.Linq;
 using System.Reflection;
 using Valve.VR;
+using VRGIN.Controls;
 using VRGIN.Core;
-using VRGIN.Core.Controls;
-using VRGIN.Core.Helpers;
-using VRGIN.Core.Modes;
+using VRGIN.Helpers;
+using VRGIN.Modes;
 
 namespace SexyVR {
     class SexyStudioSeatedMode : SeatedMode {
