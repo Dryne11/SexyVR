@@ -12,38 +12,33 @@ namespace SexyVR {
 
         protected override void OnStart() {
             base.OnStart();
-
             gameObject.AddComponent<OSPManager>();
-
-            //if (IsUIOnlyScene) {
-            //    GameControl ctrl = GameObject.FindObjectOfType<GameControl>();
-            //    ctrl.MapDataCtrl.ChangeMap(ctrl.MapDataCtrl.Datas.ElementAt(1).Value, ctrl, VRCamera.Instance.camera, false, false);
-            //}
-        }
-
-        protected override void OnLevel(int level) {
-            base.OnLevel(level);
-
-            //if (IsUIOnlyScene) {
-            //    GameControl ctrl = GameObject.FindObjectOfType<GameControl>();
-            //    ctrl.MapDataCtrl.ChangeMap(ctrl.MapDataCtrl.Datas.ElementAt(1).Value, ctrl, VRCamera.Instance.camera, false, false);
-            //}
-        }
-
-        //private bool IsUIOnlyScene {
-        //    get {
-        //        return !GameObject.FindObjectOfType<IllusionCamera>();
-        //    }
-        //}
-
-        protected override void OnUpdate() {
-            base.OnUpdate();
         }
 
         public override Camera FindCamera() {
+            SexyStudioVR.LogCameras();
             GameObject gameObjectWithTag = GameObject.FindGameObjectWithTag("Camera3D");
-            Camera cam = (Camera) gameObjectWithTag.GetComponent<Camera>();
-            return cam;
+            if (gameObjectWithTag != null) {
+                Camera cam = gameObjectWithTag.GetComponent<Camera>();
+                if (SexyStudioVR.IsVrCamera(cam)) {
+                    cam.cullingMask = int.MaxValue; // just give us all please?
+                    return cam;
+                }
+            }
+            // Happens after OnLevel. Tell the SexyStudioVR to look for a valid camera again:
+            SexyStudioVR.vrCamAvailable = false;
+            return null;
+        }
+
+        public override IEnumerable<Camera> FindSubCameras() {
+            // Simply adding all available cameras still does not give us the 'right' culling mask.
+            // See hack in FindCamera().
+            //foreach (Camera cam in GameObject.FindObjectsOfType<Camera>()) {
+            //    if (!SexyStudioVR.TARGET_CAMERA.Equals(cam.name)) {
+            //        yield return cam;
+            //    }
+            //}
+            yield break;
         }
     }
 }
