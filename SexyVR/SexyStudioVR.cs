@@ -7,9 +7,13 @@ using VRGIN.Helpers;
 
 namespace SexyVR {
     class SexyStudioVR : IEnhancedPlugin {
+
+        public static readonly string _StudioExecutable = "SexyBeachStudio_32";
+        public static readonly string _MaingameExecutable = "SexyBeachPR_32";
+
         public string[] Filter {
             get {
-                return new string[] { "SexyBeachStudio_32", "SexyBeachPR_32" };
+                return new string[] { _StudioExecutable, _MaingameExecutable };
             }
         }
 
@@ -26,9 +30,7 @@ namespace SexyVR {
         }
 
         private bool vrEnabled = false;
-        private bool vrStarted = false;
-        // needed in the main game while we are looking at the main menu or changing scenes
-        public static bool vrCamAvailable = false;
+
         private IShortcut shortcutLogCameras = new KeyboardShortcut(new KeyStroke("F8"), LogCameras);
 
         public void OnApplicationQuit() {
@@ -37,7 +39,8 @@ namespace SexyVR {
         public void OnApplicationStart() {
             if (Environment.CommandLine.Contains("--vr")) {
                 Logger.Info("started");
-                //StartVR();
+                var manager = VRManager.Create<SexyStudioInterpreter>(new SexyStudioContext());
+                manager.SetMode<SexyStudioSeatedMode>();
                 vrEnabled = true;
             }
             if (Environment.CommandLine.Contains("--verbose")) {
@@ -52,47 +55,7 @@ namespace SexyVR {
             }
         }
 
-        public static bool IsVrCamera(Camera cam) {
-            if (cam == null) {
-                return false;
-            }
-            switch (cam.name) {
-                case "Main Camera_Prefab": // Studio and Main 3D-World
-                case "Main HsceneCamera": // Main HScene
-                    return true;
-                default:
-                    return false;
-            }
-        }
-
-        private bool HasVrCamera() {
-            GameObject gameObjectWithTag = GameObject.FindGameObjectWithTag("Camera3D");
-            // In the main game, a camera named "Character Camera" is present right after the map
-            // is loaded. It disappears shortly after. We are looking for a different camera:
-            return gameObjectWithTag != null && IsVrCamera(gameObjectWithTag.GetComponent<Camera>());
-        }
-
-        private static void StartVR() {
-            var manager = VRManager.Create<SexyStudioInterpreter>(new SexyStudioContext());
-            manager.SetMode<SexyStudioSeatedMode>();
-        }
-
         public void OnFixedUpdate() {
-            // TODO at some point we can get the starting menu of the main game into vr when copying
-            // a NULL camera to VRCamera, investigate...
-            if (vrEnabled && !vrCamAvailable) {
-                vrCamAvailable = HasVrCamera();
-                if (vrCamAvailable && vrStarted) {
-                    // Copy the new cam (old one had been removed by the game on scene change)
-                    Logger.Info("Found a camera, copy");
-                    VRCamera.Instance.Copy(VRManager.Instance.Interpreter.FindCamera());
-                } else if (vrCamAvailable) {
-                    // First start, init everything
-                    Logger.Info("Found a camera, starting VR");
-                    StartVR();
-                    vrStarted = true;
-                }
-            }
         }
 
         public void OnLateUpdate() {
@@ -107,7 +70,7 @@ namespace SexyVR {
         public void OnUpdate() {
             shortcutLogCameras.Evaluate();
 
-            if (vrEnabled && vrCamAvailable) {
+            if (vrEnabled) {
                 FixCameraTarget();
                 FixCanvasLayer();
             }

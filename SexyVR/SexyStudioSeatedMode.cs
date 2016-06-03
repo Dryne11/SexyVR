@@ -11,8 +11,8 @@ namespace SexyVR {
     class SexyStudioSeatedMode : SeatedMode {
 
         private static bool _ControllerFound = false;
-        private PropertyInfo _IllusionCameraRotation = typeof(BaseCameraControl).GetProperty("Rot");
-        private BaseCameraControl _IllusionCamera;
+        //private PropertyInfo _IllusionCameraRotation = typeof(BaseCameraControl).GetProperty("Rot");
+        //private BaseCameraControl _IllusionCamera;
 
         protected void OnEnable() {
             Logger.Info("Enter seated mode");
@@ -67,36 +67,36 @@ namespace SexyVR {
 
         protected override void OnLevel(int level) {
             base.OnLevel(level);
-            _IllusionCamera = FindObjectOfType<BaseCameraControl>();
-            Logger.Info("SeatedMode.OnLevel() camera is {0}", _IllusionCamera);
+            //_IllusionCamera = FindObjectOfType<BaseCameraControl>();
+            //Logger.Info("SeatedMode.OnLevel() camera is {0}", _IllusionCamera);
         }
 
         protected override void CorrectRotationLock() {
-            if (_IllusionCamera) {
-                Logger.Info("SeatedMode.CorrectRotationLock()");
-                var my = VR.Camera.SteamCam.origin;
+            //if (_IllusionCamera) {
+            //    Logger.Info("SeatedMode.CorrectRotationLock()");
+            //    var my = VR.Camera.SteamCam.origin;
 
 
-                Logger.Info("PropertyInfo is {0}", _IllusionCameraRotation);
-                Logger.Info("Setting to {0}", my.eulerAngles);
+            //    Logger.Info("PropertyInfo is {0}", _IllusionCameraRotation);
+            //    Logger.Info("Setting to {0}", my.eulerAngles);
 
-                _IllusionCameraRotation.SetValue(_IllusionCamera, my.eulerAngles, null);
+            //    _IllusionCameraRotation.SetValue(_IllusionCamera, my.eulerAngles, null);
 
-                //Vector3 b = my.rotation * (Vector3.back * _IllusionCamera.Distance);
-                //my.position = _IllusionCamera.Focus + b;
-            }
+            //    //Vector3 b = my.rotation * (Vector3.back * _IllusionCamera.Distance);
+            //    //my.position = _IllusionCamera.Focus + b;
+            //}
         }
 
         protected override void SyncCameras() {
-            if (_IllusionCamera) {
-                Logger.Info("SeatedMode.SyncCameras()");
-                var my = VR.Camera.SteamCam.origin;
+            //if (_IllusionCamera) {
+            //    Logger.Info("SeatedMode.SyncCameras()");
+            //    var my = VR.Camera.SteamCam.origin;
 
-                //_IllusionCamera.Set(
-                //    my.position + my.forward,
-                //    Quaternion.LookRotation(my.forward, my.up).eulerAngles,
-                //1);
-            }
+            //    //_IllusionCamera.Set(
+            //    //    my.position + my.forward,
+            //    //    Quaternion.LookRotation(my.forward, my.up).eulerAngles,
+            //    //1);
+            //}
         }
     }
 }
