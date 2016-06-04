@@ -42,6 +42,10 @@ namespace SexyVR {
                 var manager = VRManager.Create<SexyStudioInterpreter>(new SexyStudioContext());
                 manager.SetMode<SexyStudioSeatedMode>();
                 vrEnabled = true;
+                if (Environment.CommandLine.Contains(_MaingameExecutable)) {
+                    HSceneUI ui = HSceneUI.Create();
+                    ui.transform.SetParent(VRGUI.Instance.transform, false);
+                }
             }
             if (Environment.CommandLine.Contains("--verbose")) {
                 Logger.Level = Logger.LogMode.Debug;
