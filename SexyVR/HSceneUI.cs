@@ -55,9 +55,9 @@ namespace SexyVR {
 
         protected override void OnFixedUpdate() {
             base.OnFixedUpdate();
-            if (!_Canvas.enabled) {
-                _Canvas.enabled = true;
-            }
+            //if (!_Canvas.enabled) {
+            //    _Canvas.enabled = true;
+            //}
         }
 
         protected override void OnUpdate() {
@@ -92,11 +92,13 @@ namespace SexyVR {
             _Image.GetComponent<RectTransform>().sizeDelta = new Vector2(Screen.width, Screen.height);
 
             _IsRendering = true;
+            _Canvas.enabled = true;
         }
 
         private void StopRendering() {
             Logger.Info("StopRendering()");
             _IsRendering = false;
+            _Canvas.enabled = false;
             RenderTexture oldTexture = _Image.texture as RenderTexture;
             // Camera might be destroyed already.
             if (_Camera != null) {

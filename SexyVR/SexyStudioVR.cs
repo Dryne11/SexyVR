@@ -1,6 +1,10 @@
 ﻿using IllusionPlugin;
+using Manager;
 using System;
+using System.Collections;
+using System.Reflection;
 using UnityEngine;
+using UnitySampleAssets.Utility;
 using VRGIN.Controls;
 using VRGIN.Core;
 using VRGIN.Helpers;
@@ -25,11 +29,9 @@ namespace SexyVR {
 
         public string Version {
             get {
-                return "0.1";
+                return "0.3";
             }
         }
-
-        private bool vrEnabled = false;
 
         private IShortcut shortcutLogCameras = new KeyboardShortcut(new KeyStroke("F8"), LogCameras);
 
@@ -41,7 +43,6 @@ namespace SexyVR {
                 Logger.Info("started");
                 var manager = VRManager.Create<SexyStudioInterpreter>(new SexyStudioContext());
                 manager.SetMode<SexyStudioSeatedMode>();
-                vrEnabled = true;
                 if (Environment.CommandLine.Contains(_MaingameExecutable)) {
                     HSceneUI ui = HSceneUI.Create();
                     ui.transform.SetParent(VRGUI.Instance.transform, false);
@@ -53,10 +54,68 @@ namespace SexyVR {
         }
 
         public static void LogCameras() {
-            Logger.Info("Dumping cameras");
-            foreach (Camera cam in GameObject.FindObjectsOfType<Camera>()) {
-                Logger.Info("{0} ({1})", cam, cam.name);
-            }
+            MouseWorldCursor.Instance.Visible = !MouseWorldCursor.Instance.Visible;
+
+            //Vector3 targetPos = Vector3.zero;
+            //foreach (Camera cam in GameObject.FindObjectsOfType<Camera>()) {
+            //    if("OgjControllerCamera".Equals(cam.name)) {
+            //        cam.transform.SetParent(VRCamera.Instance.SteamCam.head);
+            //        Logger.Info("Moved camera");
+            //    }
+            //}
+
+            //Logger.Info("--");
+            //foreach (GameObject go in GameObject.FindObjectsOfType<GameObject>()) {
+            //    if (go.name.Equals("Cube")) {
+            //        Logger.Info("Checking Cube with position {0}", go.transform.position);
+            //        foreach (Camera cam in GameObject.FindObjectsOfType<Camera>()) {
+            //            Vector3 screenPoint = cam.WorldToViewportPoint(go.transform.position);
+            //            bool onCameraScreen = screenPoint.z > 0
+            //                && screenPoint.x > 0 && screenPoint.x < 1
+            //                && screenPoint.y > 0 && screenPoint.y < 1;
+            //            Logger.Info("{0} ({1}) sees the cube={2}", cam, cam.name, onCameraScreen);
+            //        }
+            //    }
+            //}
+
+            //FieldInfo fiCameraTarget = typeof(OnMouseChecker).GetField(
+            //    "camera",
+            //    BindingFlags.NonPublic | BindingFlags.Instance);
+            //Logger.Info("--");
+            //foreach (OnMouseChecker ctrl in GameObject.FindObjectsOfType<OnMouseChecker>()) {
+            //    Logger.Info("OnMouseChecker: {0} - {1}", ctrl, ctrl.hover_state);
+            //    Logger.Info("Camera before: {0}", fiCameraTarget.GetValue(ctrl));
+            //    fiCameraTarget.SetValue(ctrl, cameraSource);
+            //    Logger.Info("Camera after: {0}", fiCameraTarget.GetValue(ctrl));
+            //}
+
+            //sb_HScene[] sbHScenes = GameObject.FindObjectsOfType<sb_HScene>();
+            //Logger.Info("Found {0} sb_HScenes", sbHScenes.Length);
+            //foreach (sb_HScene scene in sbHScenes) {
+            //    FieldInfo fieldFemale = typeof(sb_HScene).GetField("m_Female", BindingFlags.NonPublic | BindingFlags.Instance);
+            //    FieldInfo fieldMale = typeof(sb_HScene).GetField("m_Male", BindingFlags.NonPublic | BindingFlags.Instance);
+            //    Logger.Info("scene.IsYes={0} m_Female={1} m_Male={2}",
+            //        scene.IsYes, fieldFemale.GetValue(scene), fieldMale.GetValue(scene));
+            //}
+
+            //HSceneManager manager = Singleton<HSceneManager>.Instance;
+            //Logger.Info("HSceneManager: PlayHScene={0} Female={1} Male={2}",
+            //    manager.PlayHScene, manager.Female, manager.Male);
+            //NeckLookController[] necks = GameObject.FindObjectsOfType<NeckLookController>();
+            //Logger.Info("Dumping {0} characters", necks.Length);
+            //foreach (NeckLookController neck in necks) {
+            //    CharBody chara = neck.GetComponentInParent<CharBody>();
+            //    if (chara != null) {
+            //        Logger.Info("Found character: {0}", chara);
+            //    } else {
+            //        Logger.Info("NeckLookController without character?");
+            //    }
+            //}
+
+            //Logger.Info("Dumping cameras");
+            //foreach (Camera cam in GameObject.FindObjectsOfType<Camera>()) {
+            //    Logger.Info("{0} ({1})", cam, cam.name);
+            //}
         }
 
         public void OnFixedUpdate() {
@@ -73,40 +132,6 @@ namespace SexyVR {
 
         public void OnUpdate() {
             shortcutLogCameras.Evaluate();
-
-            if (vrEnabled) {
-                FixCameraTarget();
-                FixCanvasLayer();
-            }
-        }
-
-        private void FixCameraTarget() {
-            // The target is always set to the camera transform, even in modes like Straight, Divert and Animation.
-            // TODO in the main game this get's spammed all over. Someone resets the target we just set?
-            foreach (NeckLookController neck in GameObject.FindObjectsOfType<NeckLookController>()) {
-                if (neck.target != null && neck.target.gameObject != VRCamera.Instance.SteamCam.gameObject) {
-                    neck.target = VRCamera.Instance.SteamCam.transform;
-                    Logger.Info("Fixed neck target");
-                }
-            }
-            foreach (EyeLookController eye in GameObject.FindObjectsOfType<EyeLookController>()) {
-                if (eye.target != null && eye.target.gameObject != VRCamera.Instance.SteamCam.gameObject) {
-                    eye.target = VRCamera.Instance.SteamCam.transform;
-                    Logger.Info("Fixed eye target");
-                }
-            }
-        }
-
-        private void FixCanvasLayer() {
-            // These canvas are in the "Default" layer, which is not showing in the vr cam. Reassign them to
-            // the "UI" layer where all other menu canvas are put.
-            foreach (Canvas canvas in GameObject.FindObjectsOfType<Canvas>()) {
-                if (canvas.name.Equals("AnimeControlCanvas") // Studio
-                    || canvas.name.Equals("HAnimeControlCanvas") // Studio
-                    ) {
-                    canvas.gameObject.layer = LayerMask.NameToLayer("UI");
-                }
-            }
         }
     }
 }

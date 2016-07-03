@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using VRGIN.Core;
@@ -19,6 +20,7 @@ namespace SexyVR {
             base.OnStart();
             _isStudio = Environment.CommandLine.Contains(SexyStudioVR._StudioExecutable);
             gameObject.AddComponent<OSPManager>();
+            StartCoroutine(fixThings());
         }
 
         protected override void OnLevel(int level) {
@@ -84,6 +86,54 @@ namespace SexyVR {
             //    }
             //}
             yield break;
+        }
+
+        public IEnumerator fixThings() {
+            while (true) {
+                Logger.Info("Fixing things!");
+                //FixCameraTarget();
+                FixCanvasLayer();
+                yield return new WaitForSeconds(5.0f);
+            }
+        }
+
+        private void FixCameraTarget() {
+            // The target is always set to the camera transform, even in modes like Straight, Divert and Animation.
+            // TODO in the main game this get's spammed all over. Someone resets the target we just set?
+            NeckLookController[] necks = GameObject.FindObjectsOfType<NeckLookController>();
+            if (necks.Length > 0) {
+                Logger.Info("Found {0} necks", necks.Length);
+            }
+            foreach (NeckLookController neck in necks) {
+                Logger.Info("neck.target ({0}) vs SteamCam.transform ({1})",
+                    neck.target,
+                    VRCamera.Instance.SteamCam.transform);
+                if (neck.target != null && neck.target.gameObject != VRCamera.Instance.SteamCam.gameObject) {
+                    Logger.Info("gameObjects did not match: {0} vs {1}",
+                    neck.target.gameObject,
+                    VRCamera.Instance.SteamCam.gameObject);
+                    neck.target = VRCamera.Instance.SteamCam.transform;
+                    Logger.Info("Fixed neck target");
+                }
+            }
+            foreach (EyeLookController eye in GameObject.FindObjectsOfType<EyeLookController>()) {
+                if (eye.target != null && eye.target.gameObject != VRCamera.Instance.SteamCam.gameObject) {
+                    eye.target = VRCamera.Instance.SteamCam.transform;
+                    Logger.Info("Fixed eye target");
+                }
+            }
+        }
+
+        private void FixCanvasLayer() {
+            // These canvas are in the "Default" layer, which is not showing in the vr cam. Reassign them to
+            // the "UI" layer where all other menu canvas are put.
+            foreach (Canvas canvas in GameObject.FindObjectsOfType<Canvas>()) {
+                if (canvas.name.Equals("AnimeControlCanvas") // Studio
+                    || canvas.name.Equals("HAnimeControlCanvas") // Studio
+                    ) {
+                    canvas.gameObject.layer = LayerMask.NameToLayer("UI");
+                }
+            }
         }
     }
 }

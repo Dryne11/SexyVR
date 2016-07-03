@@ -23,12 +23,6 @@ namespace SexyVR {
             }
         }
 
-        public string HMDLayer {
-            get {
-                return "ScreenShot";
-            }
-        }
-
         public string[] IgnoredCanvas {
             get {
                 return _IgnoredCanvas;
@@ -76,6 +70,12 @@ namespace SexyVR {
                 // Canvas that overlap other canvas (exit dialog, scene load gallery) are not fully operable if
                 // we use the alternative sorting mode.
                 return false;
+            }
+        }
+
+        public string InvisibleLayer {
+            get {
+                return "ScreenShot";
             }
         }
     }
