@@ -1,10 +1,7 @@
 ﻿using IllusionPlugin;
-using Manager;
 using System;
-using System.Collections;
 using System.Reflection;
 using UnityEngine;
-using UnitySampleAssets.Utility;
 using VRGIN.Controls;
 using VRGIN.Core;
 using VRGIN.Helpers;
@@ -29,7 +26,7 @@ namespace SexyVR {
 
         public string Version {
             get {
-                return "0.3";
+                return "0.4";
             }
         }
 
@@ -55,6 +52,37 @@ namespace SexyVR {
 
         public static void LogCameras() {
             MouseWorldCursor.Instance.Visible = !MouseWorldCursor.Instance.Visible;
+            //foreach (GameObject go in GameObject.FindObjectsOfType<GameObject>()) {
+            //    if ("Cube".Equals(go.name)) {
+            //        foreach (Component comp in go.GetComponents<Component>()) {
+            //            Logger.Info("Cube component: {0} activeSelf={1}",
+            //                comp,
+            //                comp.gameObject.activeSelf);
+            //        }
+            //        foreach (Component comp in go.GetComponentsInChildren<Component>()) {
+            //            Logger.Info("Cube.child ({0}) component: {1} activeSelf={2}",
+            //                comp.gameObject,
+            //                comp,
+            //                comp.gameObject.activeSelf);
+            //        }
+            //        foreach (Component comp in go.GetComponentsInParent<Component>()) {
+            //            Logger.Info("Cube.parent ({0}) component: {1} activeSelf={2}",
+            //                comp.gameObject,
+            //                comp,
+            //                comp.gameObject.activeSelf);
+            //        }
+            //    }
+            //}
+            //FieldInfo fiCamera = typeof(SelectedMouseScript).GetField(
+            //    "camera",
+            //    BindingFlags.Instance | BindingFlags.NonPublic);
+            //foreach (SelectedMouseScript script in GameObject.FindObjectsOfType<SelectedMouseScript>()) {
+            //    Logger.Info("Found Script for {0} - camera={1}", script.target.gameObject, fiCamera.GetValue(script));
+            //    foreach (Collider collider in script.target.gameObject.GetComponentsInChildren<Collider>()) {
+            //        Logger.Info("child.collider ({0}.{1}) ena={2}",
+            //            collider.gameObject, collider, collider.enabled);
+            //    }
+            //}
 
             //Vector3 targetPos = Vector3.zero;
             //foreach (Camera cam in GameObject.FindObjectsOfType<Camera>()) {
@@ -76,17 +104,6 @@ namespace SexyVR {
             //            Logger.Info("{0} ({1}) sees the cube={2}", cam, cam.name, onCameraScreen);
             //        }
             //    }
-            //}
-
-            //FieldInfo fiCameraTarget = typeof(OnMouseChecker).GetField(
-            //    "camera",
-            //    BindingFlags.NonPublic | BindingFlags.Instance);
-            //Logger.Info("--");
-            //foreach (OnMouseChecker ctrl in GameObject.FindObjectsOfType<OnMouseChecker>()) {
-            //    Logger.Info("OnMouseChecker: {0} - {1}", ctrl, ctrl.hover_state);
-            //    Logger.Info("Camera before: {0}", fiCameraTarget.GetValue(ctrl));
-            //    fiCameraTarget.SetValue(ctrl, cameraSource);
-            //    Logger.Info("Camera after: {0}", fiCameraTarget.GetValue(ctrl));
             //}
 
             //sb_HScene[] sbHScenes = GameObject.FindObjectsOfType<sb_HScene>();

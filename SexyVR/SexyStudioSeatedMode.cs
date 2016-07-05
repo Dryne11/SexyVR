@@ -14,12 +14,12 @@ namespace SexyVR {
         //private PropertyInfo _IllusionCameraRotation = typeof(BaseCameraControl).GetProperty("Rot");
         //private BaseCameraControl _IllusionCamera;
 
-        protected void OnEnable() {
+        protected override void OnEnable() {
             Logger.Info("Enter seated mode");
             SteamVR_Utils.Event.Listen("device_connected", OnDeviceConnected);
         }
 
-        protected void OnDisable() {
+        protected override void OnDisable() {
             Logger.Info("Leave seated mode");
             SteamVR_Utils.Event.Remove("device_connected", OnDeviceConnected);
 

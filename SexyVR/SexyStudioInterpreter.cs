@@ -8,6 +8,7 @@ namespace SexyVR {
     class SexyStudioInterpreter : GameInterpreter {
 
         private bool _isStudio = true;
+        public bool IsStudio { get { return _isStudio; } private set { _isStudio = value; } }
         private string _targetCameraName = null;
         private bool _lookForCamera = false;
 
@@ -18,7 +19,8 @@ namespace SexyVR {
 
         protected override void OnStart() {
             base.OnStart();
-            _isStudio = Environment.CommandLine.Contains(SexyStudioVR._StudioExecutable);
+            IsStudio = Environment.CommandLine.Contains(SexyStudioVR._StudioExecutable);
+            Logger.Info("yea so studio={0} and ", _isStudio, IsStudio);
             gameObject.AddComponent<OSPManager>();
             StartCoroutine(fixThings());
         }
@@ -51,7 +53,7 @@ namespace SexyVR {
             switch (level) {
                 case 1:
                     // In Maingame, level 1 is the Logo. Studio only has level 1.
-                    return _isStudio ? "Main Camera_Prefab" : null;
+                    return IsStudio ? "Main Camera_Prefab" : null;
                 case 2:
                     return null;
                 case 3: // 3D-World (Main)
@@ -90,8 +92,7 @@ namespace SexyVR {
 
         public IEnumerator fixThings() {
             while (true) {
-                Logger.Info("Fixing things!");
-                //FixCameraTarget();
+                FixCameraTarget();
                 FixCanvasLayer();
                 yield return new WaitForSeconds(5.0f);
             }
@@ -101,17 +102,8 @@ namespace SexyVR {
             // The target is always set to the camera transform, even in modes like Straight, Divert and Animation.
             // TODO in the main game this get's spammed all over. Someone resets the target we just set?
             NeckLookController[] necks = GameObject.FindObjectsOfType<NeckLookController>();
-            if (necks.Length > 0) {
-                Logger.Info("Found {0} necks", necks.Length);
-            }
             foreach (NeckLookController neck in necks) {
-                Logger.Info("neck.target ({0}) vs SteamCam.transform ({1})",
-                    neck.target,
-                    VRCamera.Instance.SteamCam.transform);
                 if (neck.target != null && neck.target.gameObject != VRCamera.Instance.SteamCam.gameObject) {
-                    Logger.Info("gameObjects did not match: {0} vs {1}",
-                    neck.target.gameObject,
-                    VRCamera.Instance.SteamCam.gameObject);
                     neck.target = VRCamera.Instance.SteamCam.transform;
                     Logger.Info("Fixed neck target");
                 }
@@ -134,6 +126,11 @@ namespace SexyVR {
                     canvas.gameObject.layer = LayerMask.NameToLayer("UI");
                 }
             }
+        }
+
+        public override bool IsIgnoredCanvas(Canvas canvas) {
+            // Very big canvas that fills the whole screen in the Maingame and has no use.
+            return "Sonner".Equals(LayerMask.LayerToName(canvas.gameObject.layer));
         }
     }
 }
