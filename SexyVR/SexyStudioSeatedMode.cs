@@ -1,11 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using Leap.Unity;
+using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
+using UnityEngine;
 using Valve.VR;
 using VRGIN.Controls;
 using VRGIN.Core;
 using VRGIN.Helpers;
 using VRGIN.Modes;
+using static SexyVR.DynamicColliderRegistry;
 
 namespace SexyVR {
     class SexyStudioSeatedMode : SeatedMode {
@@ -22,13 +24,66 @@ namespace SexyVR {
         protected override void OnDisable() {
             Logger.Info("Leave seated mode");
             SteamVR_Utils.Event.Remove("device_connected", OnDeviceConnected);
+        }
 
+        public override void OnDestroy() {
+            base.OnDestroy();
+            DynamicColliderRegistry.Clear();
         }
 
         public override ETrackingUniverseOrigin TrackingOrigin {
             get {
                 return ETrackingUniverseOrigin.TrackingUniverseSeated;
             }
+        }
+
+        protected override void CreateControllers() {
+            base.CreateControllers();
+            foreach (var controller in new Controller[] { Left, Right }) {
+                var boneCollider = CreateCollider(controller.transform, 0.01f);
+                boneCollider.m_Center.y = -0.03f;
+                boneCollider.m_Center.z = 0.01f;
+                DynamicColliderRegistry.RegisterCollider(boneCollider);
+            }
+        }
+
+        private DynamicBoneCollider CreateCollider(Transform parent, float radius) {
+            var collider = UnityHelper.CreateGameObjectAsChild("Dynamic Collider", parent).gameObject.AddComponent<DynamicBoneCollider>();
+            collider.m_Radius = radius;
+            collider.m_Bound = DynamicBoneCollider.Bound.Outside;
+            collider.m_Direction = DynamicBoneCollider.Direction.X;
+            collider.m_Center.y = 0;
+            collider.m_Center.z = 0;
+            return collider;
+        }
+
+        protected override HandAttachments BuildAttachmentHand(Chirality handedness) {
+            var hand = base.BuildAttachmentHand(handedness);
+
+            foreach (var sphere in new Transform[] { hand.Thumb, hand.Index, hand.Middle, hand.Ring, hand.Pinky, hand.Palm }) {
+                Logger.Info("Registering {0}", sphere);
+                var boneCollider = CreateCollider(sphere, -0.05f);
+                boneCollider.enabled = false;
+                DynamicColliderRegistry.RegisterCollider(boneCollider);
+                boneCollider = CreateCollider(sphere, 0.01f);
+                boneCollider.enabled = false;
+                DynamicColliderRegistry.RegisterCollider(boneCollider);
+            }
+            hand.OnBegin += delegate {
+                foreach (var collider in hand.GetComponentsInChildren<DynamicBoneCollider>()) {
+                    collider.enabled = true;
+                }
+            };
+
+            hand.OnFinish += delegate {
+                foreach (var collider in hand.GetComponentsInChildren<DynamicBoneCollider>()) {
+                    collider.enabled = false;
+                }
+            };
+
+            hand.gameObject.AddComponent<GrabHandler>();
+
+            return hand;
         }
 
         private void OnDeviceConnected(object[] args) {

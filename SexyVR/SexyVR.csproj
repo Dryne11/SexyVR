@@ -56,13 +56,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DynamicColliderRegistry.cs" />
+    <Compile Include="GrabHandler.cs" />
     <Compile Include="HSceneUI.cs" />
+    <Compile Include="IKEffectorRegistry.cs" />
     <Compile Include="MouseWorldCursor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SexyActor.cs" />
     <Compile Include="SexyStudioContext.cs" />
     <Compile Include="SexyStudioInterpreter.cs" />
     <Compile Include="SexyStudioSeatedMode.cs" />
     <Compile Include="SexyStudioVR.cs" />
+    <Compile Include="SexyVoiceCommand.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

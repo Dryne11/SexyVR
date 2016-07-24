@@ -13,8 +13,10 @@ namespace SexyVR {
         public SexyStudioContext() {
             _Materials = new DefaultMaterialPalette();
             _Settings = VRSettings.Load<VRSettings>("vr_settings.xml");
-
-            _Materials.StandardShader = Shader.Find("Marmoset/Specular IBL");
+            // XXX The only available shader wtf??
+            _Materials.StandardShader = Shader.Find("Diffuse");
+            //_Materials.StandardShader = Shader.Find("Marmoset/Specular IBL");
+            Logger.Info("StandardShader is {0}", _Materials.StandardShader);
         }
 
         public string GuiLayer {
@@ -76,6 +78,12 @@ namespace SexyVR {
         public string InvisibleLayer {
             get {
                 return "ScreenShot";
+            }
+        }
+
+        public Type VoiceCommandType {
+            get {
+                return typeof(SexyVoiceCommand);
             }
         }
     }

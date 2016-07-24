@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using VRGIN.Core;
 
@@ -19,8 +20,9 @@ namespace SexyVR {
 
         protected override void OnStart() {
             base.OnStart();
+            Logger.Level = Logger.LogMode.Info;
             IsStudio = Environment.CommandLine.Contains(SexyStudioVR._StudioExecutable);
-            Logger.Info("yea so studio={0} and ", _isStudio, IsStudio);
+            Logger.Info("studio={0}", _isStudio);
             gameObject.AddComponent<OSPManager>();
             StartCoroutine(fixThings());
         }
@@ -30,6 +32,16 @@ namespace SexyVR {
             _targetCameraName = CameraNameForLevel(level);
             _lookForCamera = true;
             Logger.Info("OnLevel({0}) - ({1})", level, _targetCameraName);
+        }
+
+        protected override void OnUpdate() {
+            base.OnUpdate();
+
+            if (_isStudio) {
+                CleanActors();
+            } else {
+                _Actors.Clear();
+            }
         }
 
         protected override void OnFixedUpdate() {
@@ -46,6 +58,23 @@ namespace SexyVR {
                         VRCamera.Instance.Copy(camera);
                     }
                 }
+            }
+        }
+
+        private void CleanActors() {
+            _Actors = Actors.Where(a => a.IsValid).ToList();
+
+            foreach (var member in
+                Singleton<Manager.Studio>.Instance.AllStudioCharaDic.
+                Select(studioCharEntry => studioCharEntry.Value.body).
+                ToList()) {
+                AddActor(member);
+            }
+        }
+
+        private void AddActor(CharBody member) {
+            if (!member.GetComponent<Marker>()) {
+                _Actors.Add(new SexyActor(member));
             }
         }
 

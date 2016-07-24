@@ -1,7 +1,5 @@
 ﻿using IllusionPlugin;
 using System;
-using System.Reflection;
-using UnityEngine;
 using VRGIN.Controls;
 using VRGIN.Core;
 using VRGIN.Helpers;
