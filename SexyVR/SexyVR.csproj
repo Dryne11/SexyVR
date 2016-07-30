@@ -31,6 +31,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Install|AnyCPU'">
     <OutputPath>bin\Install\</OutputPath>
+    <VRGINPath>..\VRGIN\VRGIN\bin\Debug\</VRGINPath>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp_Studio">
@@ -80,15 +81,33 @@
     <PropertyGroup>
       <InstallDir>$(registry:HKEY_CURRENT_USER\Software\illusion\SexyBeachPR@INSTALLDIR)</InstallDir>
       <PluginDir>$(InstallDir)Plugins\</PluginDir>
-      <DataDir>$(InstallDir)SexyBeachStudio_32_Data\</DataDir>
+      <MainDataDir>$(InstallDir)SexyBeachPR_32_Data\Plugins</MainDataDir>
+      <StudioDataDir>$(InstallDir)SexyBeachStudio_32_Data\Plugins</StudioDataDir>
     </PropertyGroup>
     <ItemGroup>
-      <PluginFile1 Include="$(OutputPath)SexyVR.dll" />
-      <PluginFile2 Include="$(OutputPath)VRGIN.U46.dll" />
-      <ImageFiles Include="$(OutputPath)Images\*.*" />
+      <ImageFiles Include="$(VRGINPath)Images\*.*" />
+      <LeapC Include="$(VRGINPath)Libs\Data\Plugins\x86\LeapC.dll" />
+      <OculusSpatializerPlugin Include="$(VRGINPath)Libs\Data\Plugins\x86\OculusSpatializerPlugin.dll" />
+      <openvr_api Include="$(VRGINPath)Libs\Data\Plugins\x86\openvr_api.dll" />
+      <dxgi Include="$(VRGINPath)Libs\dxgi.dll" />
+      <LeapCSharpNET35 Include="$(VRGINPath)LeapCSharp.NET3.5.dll" />
+      <SpeechTransport Include="$(VRGINPath)SpeechTransport.dll" />
+      <WindowsInput Include="$(VRGINPath)WindowsInput.dll" />	  
+      <SexyVr Include="$(OutputPath)SexyVR.dll" />
+      <VRGIN Include="$(OutputPath)VRGIN.U46.dll" />      
     </ItemGroup>
-    <Copy SourceFiles="@(PluginFile1)" DestinationFolder="$(PluginDir)" />
-    <Copy SourceFiles="@(PluginFile2)" DestinationFolder="$(PluginDir)" />
+    <Copy SourceFiles="@(dxgi)" DestinationFolder="$(InstallDir)" />
+    <Copy SourceFiles="@(LeapC)" DestinationFolder="$(MainDataDir)" />    
+    <Copy SourceFiles="@(OculusSpatializerPlugin)" DestinationFolder="$(MainDataDir)" />
+    <Copy SourceFiles="@(openvr_api)" DestinationFolder="$(MainDataDir)" />
+    <Copy SourceFiles="@(LeapC)" DestinationFolder="$(StudioDataDir)" />
+    <Copy SourceFiles="@(OculusSpatializerPlugin)" DestinationFolder="$(StudioDataDir)" />
+    <Copy SourceFiles="@(openvr_api)" DestinationFolder="$(StudioDataDir)" />
+    <Copy SourceFiles="@(LeapCSharpNET35)" DestinationFolder="$(PluginDir)" />
+    <Copy SourceFiles="@(SpeechTransport)" DestinationFolder="$(PluginDir)" />
+    <Copy SourceFiles="@(WindowsInput)" DestinationFolder="$(PluginDir)" />	
+    <Copy SourceFiles="@(SexyVr)" DestinationFolder="$(PluginDir)" />
+    <Copy SourceFiles="@(VRGIN)" DestinationFolder="$(PluginDir)" />
     <Copy SourceFiles="@(ImageFiles)" DestinationFolder="$(PluginDir)Images" />
   </Target>
 </Project>
