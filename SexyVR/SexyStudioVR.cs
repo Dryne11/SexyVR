@@ -1,5 +1,6 @@
 ﻿using IllusionPlugin;
 using System;
+using UnityEngine;
 using VRGIN.Controls;
 using VRGIN.Core;
 using VRGIN.Helpers;
@@ -24,7 +25,7 @@ namespace SexyVR {
 
         public string Version {
             get {
-                return "0.4";
+                return "0.5-Snapshot";
             }
         }
 
@@ -48,8 +49,35 @@ namespace SexyVR {
             }
         }
 
+        private static LeapMenu GUI = null;
+        public static bool menuVisible = false;
+
         public static void LogCameras() {
-            MouseWorldCursor.Instance.Visible = !MouseWorldCursor.Instance.Visible;
+            if(GUI == null) {
+                GUI = new GameObject("LeapMenu").AddComponent<LeapMenu>();
+                Logger.Info("create leapmenu");
+            }
+            menuVisible = !menuVisible;
+            Logger.Info("menuVisible = {0}", menuVisible);
+            //MouseWorldCursor.Instance.Visible = !MouseWorldCursor.Instance.Visible;
+
+            //AnimeIKCtrl[] ikCtrls = GameObject.FindObjectsOfType<AnimeIKCtrl>();
+            //FieldInfo ikTargets = typeof(AnimeIKCtrl).GetField(
+            //    "_ikTarget",
+            //    BindingFlags.Instance | BindingFlags.NonPublic);
+            //Logger.Info("Found {0} ikCtrls", ikCtrls.Length);
+            //foreach (AnimeIKCtrl ikCtrl in ikCtrls) {
+            //    Logger.Info("getting value");
+            //    var something = ikTargets.GetValue(ikCtrl);
+            //    Logger.Info("got value");
+            //    Logger.Info("the value is {0}", something);
+            //    AnimeIKCtrl.IKTargetCorrection[] targets = ikTargets.GetValue(ikCtrl) as AnimeIKCtrl.IKTargetCorrection[];
+            //    Logger.Info("Found {0} target corrections", targets.Length);
+            //    foreach (AnimeIKCtrl.IKTargetCorrection target in targets) {
+            //        Logger.Info("target={0}", target.TargetBone.position);
+            //    }
+            //}
+
             //foreach (GameObject go in GameObject.FindObjectsOfType<GameObject>()) {
             //    if ("Cube".Equals(go.name)) {
             //        foreach (Component comp in go.GetComponents<Component>()) {

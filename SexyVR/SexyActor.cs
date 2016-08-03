@@ -20,9 +20,9 @@ namespace SexyVR {
             foreach (var bone in SoftBones) {
                 DynamicColliderRegistry.RegisterDynamicBone(bone);
             }
-            foreach (var effector in actor.getIK().solver.effectors) {
-                IKEffectorRegistry.Register(effector);
-            }
+            // We don't need this anymore as we take everything "live" in the IKHelper.
+            // However if we have performance problems, use the lookup registry again.
+            //IKEffectorRegsitry.Register(actor);
         }
 
         public IEnumerable<DynamicBone> SoftBones {
@@ -39,7 +39,8 @@ namespace SexyVR {
 
         public override Transform Eyes {
             get {
-                return Actor.GetObjHead().transform;
+                // In the main game we don't have this ObjHead. However, where are the eyes?
+                return Actor.GetObjHead() != null ? Actor.GetObjHead().transform : Actor.transform;
             }
         }
 

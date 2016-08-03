@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VRGIN.Controls.Speech;
+﻿using VRGIN.Controls.Speech;
 
 namespace SexyVR {
     class SexyVoiceCommand : VoiceCommand {

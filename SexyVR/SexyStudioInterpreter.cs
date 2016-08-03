@@ -36,12 +36,7 @@ namespace SexyVR {
 
         protected override void OnUpdate() {
             base.OnUpdate();
-
-            if (_isStudio) {
-                CleanActors();
-            } else {
-                _Actors.Clear();
-            }
+            CleanActors();
         }
 
         protected override void OnFixedUpdate() {
@@ -63,12 +58,8 @@ namespace SexyVR {
 
         private void CleanActors() {
             _Actors = Actors.Where(a => a.IsValid).ToList();
-
-            foreach (var member in
-                Singleton<Manager.Studio>.Instance.AllStudioCharaDic.
-                Select(studioCharEntry => studioCharEntry.Value.body).
-                ToList()) {
-                AddActor(member);
+            foreach (var female in FindObjectsOfType<CharBody>()) {
+                AddActor(female);
             }
         }
 
@@ -85,8 +76,9 @@ namespace SexyVR {
                     return IsStudio ? "Main Camera_Prefab" : null;
                 case 2:
                     return null;
-                case 3: // 3D-World (Main)
-                case 5: // Intro-Scene (Main)
+                case 3: //  3D-World (Main)
+                case 5: //  Intro-Scene (Main)
+                case 10: // Character creation
                     return "Main Camera_Prefab";
                 case 6: // 'Something erotic' (Main)
                     return "Main HsceneCamera";
@@ -159,7 +151,8 @@ namespace SexyVR {
 
         public override bool IsIgnoredCanvas(Canvas canvas) {
             // Very big canvas that fills the whole screen in the Maingame and has no use.
-            return "Sonner".Equals(LayerMask.LayerToName(canvas.gameObject.layer));
+            return "Sonner".Equals(LayerMask.LayerToName(canvas.gameObject.layer))
+                || "BackGround".Equals(canvas.name);
         }
     }
 }

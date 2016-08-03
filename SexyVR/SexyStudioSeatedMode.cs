@@ -7,7 +7,6 @@ using VRGIN.Controls;
 using VRGIN.Core;
 using VRGIN.Helpers;
 using VRGIN.Modes;
-using static SexyVR.DynamicColliderRegistry;
 
 namespace SexyVR {
     class SexyStudioSeatedMode : SeatedMode {
@@ -80,16 +79,31 @@ namespace SexyVR {
                     collider.enabled = false;
                 }
             };
-
             hand.gameObject.AddComponent<GrabHandler>();
+            Logger.Info("Added GrabHandler");
+            if (handedness == Chirality.Left) {
+                // ClapDetector only on one hand. It tracks the other as well.
+                hand.gameObject.AddComponent<ClapDetector>();
+                hand.gameObject.GetComponent<ClapDetector>().OnClap.AddListener(onHandsClapped);
+            }
 
             return hand;
         }
 
+        private void onHandsClapped() {
+            Logger.Info("You clapped your hands! Awesome.");
+            if (Monitor != null) {
+                Destroy(Monitor.gameObject);
+            } else {
+                Monitor = VRGIN.Visuals.GUIMonitor.Create();
+                Monitor.transform.SetParent(VR.Camera.SteamCam.origin, false);
+            }
+        }
+
         private void OnDeviceConnected(object[] args) {
             if (!_ControllerFound) {
-                var index = (uint) (int) args[0];
-                var connected = (bool) args[1];
+                var index = (uint)(int)args[0];
+                var connected = (bool)args[1];
                 Logger.Info("Device connected: {0}", index);
 
                 if (connected && index > OpenVR.k_unTrackedDeviceIndex_Hmd) {
